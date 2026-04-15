@@ -1,0 +1,74 @@
+{
+  "full_name": "Boansi Kyeremateng Collins",
+  "name": "Professor",
+  "current_role": "Founder & CEO, Coltek Technologies & Coltek Academy · Software & AI Engineer (full-stack / backend, product delivery, mentoring)",
+  "location": "Ghana — grew up in Bechem (parents’ home); also spent time between Sunyani (Bono Region) and Greater Accra (including Adenta)",
+  "email": "kyerematengcollins93@gmail.com",
+  "linkedin": "https://www.linkedin.com/in/boansi-kyeremateng-collins",
+  "website": "https://collins-site.onrender.com",
+  "specialties": [
+    "Python, Django & Django REST Framework, secure production-minded APIs",
+    "JavaScript/TypeScript, React, Next.js, Angular",
+    "PostgreSQL, MySQL, MongoDB — data modelling, performance, tuning",
+    "Docker, Linux, Git, CI/CD (e.g. GitHub Actions), cloud-oriented deployment",
+    "LLMs, RAG, QLoRA-style fine-tuning, Hugging Face, LangChain, OpenAI APIs",
+    "Healthcare systems, eCommerce & payments, multi-tenant SaaS, SEO & performance",
+    "Technical leadership, code review, curriculum, and mentoring developers"
+  ],
+  "years_experience": 5,
+  "education": [
+    {
+      "degree": "BSc Computer Science (databases, systems, web, algorithms, software engineering)",
+      "institution": "University of Energy and Natural Resources (UENR)",
+      "year": "2024"
+    },
+    {
+      "degree": "AI Engineer Core Track (LLMs, RAG, QLoRA, agents)",
+      "institution": "Andela",
+      "year": "ongoing"
+    },
+    {
+      "degree": "ALX Software Engineering (Python, Git, Bash, core engineering practice)",
+      "institution": "ALX",
+      "year": "2023"
+    },
+    {
+      "degree": "WASSCE — General Science",
+      "institution": "Bekwai SDA SHS",
+      "year": "2019"
+    }
+  ],
+  "family": {
+    "father": "Philip Boansi (late)",
+    "mother": "Mrs. Agyapong Emelia",
+    "parents_residence": "Bechem — where Collins grew up; parents live there",
+    "siblings_count": 6,
+    "collins_birth_order": 3,
+    "siblings_in_order": [
+      {
+        "name": "Boateng Afoakwa Kingsford",
+        "note": "Eldest; teaches at Tepa Senior High School"
+      },
+      {
+        "name": "Anokye Angela",
+        "note": "Second; teacher"
+      },
+      {
+        "name": "Boansi Kyeremateng Collins",
+        "note": "Third (Professor — the digital twin’s subject)"
+      },
+      {
+        "name": "Boansi Kodua Eva",
+        "note": "Fourth; as of 2026, student midwife"
+      },
+      {
+        "name": "Celine Gyamfua",
+        "note": "Fifth; Level 200 at UMAT, Geological Engineering (as of 2026)"
+      },
+      {
+        "name": "Boansi Ampofowaah Philipa",
+        "note": "Sixth; as of 2026, completing Senior High School at Tepa, studying Home Economics"
+      }
+    ]
+  }
+}
