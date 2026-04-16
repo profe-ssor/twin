@@ -1,5 +1,7 @@
 project_name             = "twin"
 environment              = "prod"
+
+github_repository        = "profe-ssor/twin"
 bedrock_model_id         = "amazon.nova-lite-v1:0"  # Use better model for production
 lambda_timeout           = 60
 api_throttle_burst_limit = 20

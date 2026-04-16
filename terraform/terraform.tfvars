@@ -1,6 +1,9 @@
 aws_region               = "us-east-1"
 project_name             = "twin"
 environment              = "dev"
+
+# GitHub Actions OIDC (github-oidc.tf) — must match the repo that runs workflows
+github_repository        = "profe-ssor/twin"
 bedrock_model_id         = "amazon.nova-micro-v1:0"
 lambda_timeout           = 60
 api_throttle_burst_limit = 10
