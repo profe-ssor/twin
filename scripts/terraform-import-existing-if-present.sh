@@ -71,25 +71,27 @@ import_lambda_function() {
 }
 
 # Import ID is function_name/statement_id (AWS provider docs).
-# Do not rely on jq parsing the Policy string — real policies often break strict filters.
 import_lambda_permission() {
   local addr=$1 fn=$2 sid=$3
   in_state "$addr" && return 0
   if ! aws lambda get-function --function-name "$fn" >/dev/null 2>&1; then
     return 0
   fi
-  local raw
-  raw=$(aws lambda get-policy --function-name "$fn" --output json 2>/dev/null) || raw=""
-  if [ -z "$raw" ]; then
-    echo "No resource policy on $fn yet; skip import $addr"
-    return 0
-  fi
-  if ! echo "$raw" | grep -Fq "$sid"; then
-    echo "Lambda policy on $fn does not mention '$sid'; skip import $addr"
-    return 0
-  fi
   echo "terraform import: $addr ($fn/$sid)"
-  terraform import -input=false "$addr" "${fn}/${sid}"
+  # Import can fail (provider/config drift). Reconcile step below removes stale AWS permissions.
+  terraform import -input=false "$addr" "${fn}/${sid}" || true
+}
+
+# If the permission exists in AWS but is still not in state after import, RemovePermission
+# avoids AddPermission 409 on the next apply (same Sid).
+reconcile_lambda_permission_not_in_state() {
+  local addr=$1 fn=$2 sid=$3
+  in_state "$addr" && return 0
+  if ! aws lambda get-function --function-name "$fn" >/dev/null 2>&1; then
+    return 0
+  fi
+  echo "Reconcile: $addr not in state — removing $sid on $fn if present so apply can recreate it."
+  aws lambda remove-permission --function-name "$fn" --statement-id "$sid" 2>/dev/null || true
 }
 
 LAMBDA_ROLE="${PREFIX}-lambda-role"
@@ -114,6 +116,7 @@ import_attachment aws_iam_role_policy_attachment.lambda_s3 "$LAMBDA_ROLE" \
 # Lambda function (must exist in AWS and role must be importable first)
 import_lambda_function aws_lambda_function.api "${PREFIX}-api"
 import_lambda_permission aws_lambda_permission.api_gw "${PREFIX}-api" "AllowExecutionFromAPIGateway"
+reconcile_lambda_permission_not_in_state aws_lambda_permission.api_gw "${PREFIX}-api" "AllowExecutionFromAPIGateway"
 
 # GitHub Actions deploy role — managed attachments
 import_attachment aws_iam_role_policy_attachment.github_lambda "$GITHUB_ROLE" \

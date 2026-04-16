@@ -119,7 +119,10 @@ resource "aws_iam_role_policy" "github_additional" {
           "iam:TagRole",
           "iam:UntagRole",
           "iam:ListInstanceProfilesForRole",
-          "sts:GetCallerIdentity"
+          "sts:GetCallerIdentity",
+          "lambda:GetPolicy",
+          "lambda:AddPermission",
+          "lambda:RemovePermission"
         ]
         Resource = "*"
       }
