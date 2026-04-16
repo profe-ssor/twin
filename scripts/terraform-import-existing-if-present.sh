@@ -86,12 +86,17 @@ import_lambda_permission() {
 # avoids AddPermission 409 on the next apply (same Sid).
 reconcile_lambda_permission_not_in_state() {
   local addr=$1 fn=$2 sid=$3
+  local raw
   in_state "$addr" && return 0
   if ! aws lambda get-function --function-name "$fn" >/dev/null 2>&1; then
     return 0
   fi
-  echo "Reconcile: $addr not in state — removing $sid on $fn if present so apply can recreate it."
-  aws lambda remove-permission --function-name "$fn" --statement-id "$sid" 2>/dev/null || true
+  raw=$(aws lambda get-policy --function-name "$fn" --output json 2>/dev/null) || return 0
+  if ! echo "$raw" | grep -Fq "$sid"; then
+    return 0
+  fi
+  echo "Reconcile: $addr not in state — removing $sid on $fn so apply can recreate it."
+  aws lambda remove-permission --function-name "$fn" --statement-id "$sid"
 }
 
 LAMBDA_ROLE="${PREFIX}-lambda-role"
