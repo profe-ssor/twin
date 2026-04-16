@@ -70,7 +70,8 @@ import_lambda_function() {
   terraform import -input=false "$addr" "$name"
 }
 
-# Import ID is function_name/statement_id (see AWS provider docs).
+# Import ID is function_name/statement_id (AWS provider docs).
+# Do not rely on jq parsing the Policy string — real policies often break strict filters.
 import_lambda_permission() {
   local addr=$1 fn=$2 sid=$3
   in_state "$addr" && return 0
@@ -78,15 +79,16 @@ import_lambda_permission() {
     return 0
   fi
   local raw
-  raw=$(aws lambda get-policy --function-name "$fn" --output json 2>/dev/null) || return 0
-  if ! echo "$raw" | jq -e --arg sid "$sid" '
-    (.Policy | fromjson).Statement
-    | if type == "array" then .[] else . end
-    | select(.Sid == $sid)
-  ' >/dev/null 2>&1; then
+  raw=$(aws lambda get-policy --function-name "$fn" --output json 2>/dev/null) || raw=""
+  if [ -z "$raw" ]; then
+    echo "No resource policy on $fn yet; skip import $addr"
     return 0
   fi
-  echo "terraform import: $addr (lambda permission $sid on $fn)"
+  if ! echo "$raw" | grep -Fq "$sid"; then
+    echo "Lambda policy on $fn does not mention '$sid'; skip import $addr"
+    return 0
+  fi
+  echo "terraform import: $addr ($fn/$sid)"
   terraform import -input=false "$addr" "${fn}/${sid}"
 }
 
