@@ -39,16 +39,38 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Normalize and validate AWS_ROLE_ARN
+        id: aws_role
+        env:
+          RAW_ARN: ${{ secrets.AWS_ROLE_ARN }}
+        run: |
+          set -euo pipefail
+          arn="${RAW_ARN//$'\r'/}"
+          arn="${arn//$'\n'/}"
+          arn="${arn//[[:space:]]/}"
+          arn="${arn%\"}"
+          arn="${arn#\"}"
+          if [ -z "$arn" ]; then
+            echo "::error::AWS_ROLE_ARN is empty. Add it under Settings → Secrets and variables → Actions (and per Environment if applicable)."
+            exit 1
+          fi
+          if ! [[ "$arn" =~ ^arn:aws:iam::[0-9]{12}:role/ ]]; then
+            echo "::error::AWS_ROLE_ARN must be a full IAM role ARN, e.g. arn:aws:iam::769579993885:role/github-actions-twin-deploy (not the OIDC provider ARN)."
+            exit 1
+          fi
+          echo "arn=$arn" >> "$GITHUB_OUTPUT"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ steps.aws_role.outputs.arn }}
           role-session-name: github-actions-destroy
           aws-region: ${{ secrets.DEFAULT_AWS_REGION }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
+          terraform_version: 1.11.4
           terraform_wrapper: false  # Important: disable wrapper to get raw outputs
 
       - name: Run Destroy Script

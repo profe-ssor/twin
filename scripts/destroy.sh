@@ -24,11 +24,10 @@ AWS_REGION=${DEFAULT_AWS_REGION:-us-east-1}
 
 # Initialize terraform with S3 backend
 echo "🔧 Initializing Terraform with S3 backend..."
-terraform init -input=false \
+terraform init -input=false -migrate-state \
   -backend-config="bucket=twin-terraform-state-${AWS_ACCOUNT_ID}" \
   -backend-config="key=${ENVIRONMENT}/terraform.tfstate" \
   -backend-config="region=${AWS_REGION}" \
-  -backend-config="dynamodb_table=twin-terraform-locks" \
   -backend-config="encrypt=true"
 
 # Check if workspace exists
