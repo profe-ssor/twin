@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Boansi Kyeremateng Collins Digital Twin",
-  description: "An AI Digital Twin of Boansi Kyeremateng Collins",
+  title: "Boansi Kyeremateng Collins — AI profile assistant",
+  description:
+    "Boansi Kyeremateng Collins's AI profile assistant — portfolio deployment on AWS. Link to his website is in the app header.",
 };
 
 export default function RootLayout({

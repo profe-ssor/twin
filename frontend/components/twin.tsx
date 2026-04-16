@@ -108,9 +108,24 @@ export default function Twin() {
             <div className="bg-gradient-to-r from-slate-700 to-slate-800 text-white p-4 rounded-t-lg">
                 <h2 className="text-xl font-semibold flex items-center gap-2">
                     <Bot className="w-6 h-6" />
-                    AI Digital Twin
+                    AI profile assistant
                 </h2>
-                <p className="text-sm text-slate-300 mt-1">Your AI course companion</p>
+                <p className="text-sm text-slate-300 mt-1">
+                    <a
+                        href="https://collins-site.onrender.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-white underline decoration-slate-400 underline-offset-2 hover:decoration-white"
+                    >
+                        Visit my Website
+                    </a>
+                    <span className="mx-2 text-slate-500" aria-hidden>
+                        ·
+                    </span>
+                    <span>
+                        Portfolio AI on AWS — API, static hosting, and automated releases.
+                    </span>
+                </p>
             </div>
 
             {/* Messages */}
@@ -120,14 +135,16 @@ export default function Twin() {
                         {hasAvatar ? (
                             <img 
                                 src="/avatar.png" 
-                                alt="Digital Twin Avatar" 
+                                alt="Boansi Kyeremateng Collins" 
                                 className="w-20 h-20 rounded-full mx-auto mb-3 border-2 border-gray-300"
                             />
                         ) : (
                             <Bot className="w-12 h-12 mx-auto mb-3 text-gray-400" />
                         )}
-                        <p>Hello! I&apos;m your Digital Twin.</p>
-                        <p className="text-sm mt-2">Ask me anything about AI deployment!</p>
+                        <p>Hello — you&apos;re speaking with Boansi Kyeremateng Collins&apos;s AI profile assistant.</p>
+                        <p className="text-sm mt-2">
+                            Ask about his work, projects, and how he approaches building in production.
+                        </p>
                     </div>
                 )}
 
@@ -143,7 +160,7 @@ export default function Twin() {
                                 {hasAvatar ? (
                                     <img 
                                         src="/avatar.png" 
-                                        alt="Digital Twin Avatar" 
+                                        alt="Boansi Kyeremateng Collins" 
                                         className="w-8 h-8 rounded-full border border-slate-300"
                                     />
                                 ) : (
@@ -187,7 +204,7 @@ export default function Twin() {
                             {hasAvatar ? (
                                 <img 
                                     src="/avatar.png" 
-                                    alt="Digital Twin Avatar" 
+                                    alt="Boansi Kyeremateng Collins" 
                                     className="w-8 h-8 rounded-full border border-slate-300"
                                 />
                             ) : (
