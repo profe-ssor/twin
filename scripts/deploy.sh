@@ -15,7 +15,15 @@ echo "📦 Building Lambda package..."
 cd terraform
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 AWS_REGION=${DEFAULT_AWS_REGION:-us-east-1}
-terraform init -input=false -migrate-state -force-copy \
+
+# Non-interactive init: some Terraform versions still prompt for "state migration" even with
+# -force-copy; piping yes answers it. In CI, drop .terraform so no stale backend metadata.
+export TF_INPUT=0
+export TF_IN_AUTOMATION=1
+if [ -n "${CI:-}" ]; then
+  rm -rf .terraform
+fi
+yes | terraform init -input=false -migrate-state -force-copy \
   -backend-config="bucket=twin-terraform-state-${AWS_ACCOUNT_ID}" \
   -backend-config="key=${ENVIRONMENT}/terraform.tfstate" \
   -backend-config="region=${AWS_REGION}" \

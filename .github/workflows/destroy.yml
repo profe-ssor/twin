@@ -70,7 +70,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.11.4
+          terraform_version: 1.12.10
           terraform_wrapper: false  # Important: disable wrapper to get raw outputs
 
       - name: Run Destroy Script
@@ -84,6 +84,9 @@ jobs:
           ./scripts/destroy.sh ${{ github.event.inputs.environment }}
         env:
           AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+          CI: true
+          TF_INPUT: "0"
+          TF_IN_AUTOMATION: "1"
 
       - name: Destruction Complete
         run: |

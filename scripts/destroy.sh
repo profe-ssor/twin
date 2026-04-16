@@ -24,7 +24,12 @@ AWS_REGION=${DEFAULT_AWS_REGION:-us-east-1}
 
 # Initialize terraform with S3 backend
 echo "🔧 Initializing Terraform with S3 backend..."
-terraform init -input=false -migrate-state -force-copy \
+export TF_INPUT=0
+export TF_IN_AUTOMATION=1
+if [ -n "${CI:-}" ]; then
+  rm -rf .terraform
+fi
+yes | terraform init -input=false -migrate-state -force-copy \
   -backend-config="bucket=twin-terraform-state-${AWS_ACCOUNT_ID}" \
   -backend-config="key=${ENVIRONMENT}/terraform.tfstate" \
   -backend-config="region=${AWS_REGION}" \

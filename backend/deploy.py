@@ -85,6 +85,7 @@ def main():
             "public.ecr.aws/lambda/python:3.12",
             "/bin/sh",
             "-c",
+            "export PIP_ROOT_USER_ACTION=ignore; "
             "pip install --target /var/task/lambda-package -r /var/task/requirements.txt "
             "--platform manylinux2014_x86_64 --only-binary=:all: --upgrade"
             + chown_suffix,

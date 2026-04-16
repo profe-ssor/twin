@@ -22,11 +22,21 @@ $awsRegion = if ($env:DEFAULT_AWS_REGION) { $env:DEFAULT_AWS_REGION } else { "us
 
 # Initialize terraform with S3 backend
 Write-Host "Initializing Terraform with S3 backend..." -ForegroundColor Yellow
-terraform init -input=false -migrate-state -force-copy `
-  -backend-config="bucket=twin-terraform-state-$awsAccountId" `
-  -backend-config="key=$Environment/terraform.tfstate" `
-  -backend-config="region=$awsRegion" `
-  -backend-config="encrypt=true"
+$env:TF_INPUT = "0"
+$env:TF_IN_AUTOMATION = "1"
+if ($env:CI) { Remove-Item -Recurse -Force .terraform -ErrorAction SilentlyContinue }
+$initArgs = @(
+  "init", "-input=false", "-migrate-state", "-force-copy",
+  "-backend-config=bucket=twin-terraform-state-$awsAccountId",
+  "-backend-config=key=$Environment/terraform.tfstate",
+  "-backend-config=region=$awsRegion",
+  "-backend-config=encrypt=true"
+)
+if (Get-Command yes -ErrorAction SilentlyContinue) {
+  yes | terraform @initArgs
+} else {
+  terraform @initArgs
+}
 
 # Check if workspace exists
 $workspaces = terraform workspace list

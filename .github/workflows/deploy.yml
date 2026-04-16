@@ -72,7 +72,8 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.11.4
+          # 1.12+ improves S3 backend / lockfile migration; keep in sync with terraform/backend.tf
+          terraform_version: 1.12.10
           terraform_wrapper: false  # Important: disable wrapper to get raw outputs
 
       - name: Setup Node.js
@@ -93,6 +94,9 @@ jobs:
           ./scripts/deploy.sh ${{ github.event.inputs.environment || 'dev' }}
         env:
           AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+          CI: true
+          TF_INPUT: "0"
+          TF_IN_AUTOMATION: "1"
           
       - name: Get Deployment URLs
         id: deploy_outputs

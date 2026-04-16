@@ -17,11 +17,23 @@ Set-Location ..
 Set-Location terraform
 $awsAccountId = aws sts get-caller-identity --query Account --output text
 $awsRegion = if ($env:DEFAULT_AWS_REGION) { $env:DEFAULT_AWS_REGION } else { "us-east-1" }
-terraform init -input=false -migrate-state -force-copy `
-  -backend-config="bucket=twin-terraform-state-$awsAccountId" `
-  -backend-config="key=$Environment/terraform.tfstate" `
-  -backend-config="region=$awsRegion" `
-  -backend-config="encrypt=true"
+$env:TF_INPUT = "0"
+$env:TF_IN_AUTOMATION = "1"
+if ($env:CI) { Remove-Item -Recurse -Force .terraform -ErrorAction SilentlyContinue }
+# Linux/macOS: `yes` feeds migration prompts. On Windows without `yes`, use Git Bash or init once interactively.
+if (Get-Command yes -ErrorAction SilentlyContinue) {
+  yes | terraform init -input=false -migrate-state -force-copy `
+    -backend-config="bucket=twin-terraform-state-$awsAccountId" `
+    -backend-config="key=$Environment/terraform.tfstate" `
+    -backend-config="region=$awsRegion" `
+    -backend-config="encrypt=true"
+} else {
+  terraform init -input=false -migrate-state -force-copy `
+    -backend-config="bucket=twin-terraform-state-$awsAccountId" `
+    -backend-config="key=$Environment/terraform.tfstate" `
+    -backend-config="region=$awsRegion" `
+    -backend-config="encrypt=true"
+}
 
 if (-not (terraform workspace list | Select-String $Environment)) {
     terraform workspace new $Environment
