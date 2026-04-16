@@ -70,6 +70,26 @@ import_lambda_function() {
   terraform import -input=false "$addr" "$name"
 }
 
+# Import ID is function_name/statement_id (see AWS provider docs).
+import_lambda_permission() {
+  local addr=$1 fn=$2 sid=$3
+  in_state "$addr" && return 0
+  if ! aws lambda get-function --function-name "$fn" >/dev/null 2>&1; then
+    return 0
+  fi
+  local raw
+  raw=$(aws lambda get-policy --function-name "$fn" --output json 2>/dev/null) || return 0
+  if ! echo "$raw" | jq -e --arg sid "$sid" '
+    (.Policy | fromjson).Statement
+    | if type == "array" then .[] else . end
+    | select(.Sid == $sid)
+  ' >/dev/null 2>&1; then
+    return 0
+  fi
+  echo "terraform import: $addr (lambda permission $sid on $fn)"
+  terraform import -input=false "$addr" "${fn}/${sid}"
+}
+
 LAMBDA_ROLE="${PREFIX}-lambda-role"
 GITHUB_ROLE="github-actions-twin-deploy"
 
@@ -91,6 +111,7 @@ import_attachment aws_iam_role_policy_attachment.lambda_s3 "$LAMBDA_ROLE" \
 
 # Lambda function (must exist in AWS and role must be importable first)
 import_lambda_function aws_lambda_function.api "${PREFIX}-api"
+import_lambda_permission aws_lambda_permission.api_gw "${PREFIX}-api" "AllowExecutionFromAPIGateway"
 
 # GitHub Actions deploy role — managed attachments
 import_attachment aws_iam_role_policy_attachment.github_lambda "$GITHUB_ROLE" \
