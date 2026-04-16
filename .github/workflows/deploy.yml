@@ -72,8 +72,8 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          # 1.12+ improves S3 backend / lockfile migration; keep in sync with terraform/backend.tf
-          terraform_version: 1.12.10
+          # Pin to a version that exists on releases.hashicorp.com (there is no 1.12.10; 1.12.x stops at 1.12.2).
+          terraform_version: 1.14.8
           terraform_wrapper: false  # Important: disable wrapper to get raw outputs
 
       - name: Setup Node.js
