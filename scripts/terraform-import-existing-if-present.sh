@@ -60,6 +60,16 @@ import_inline_policy() {
   terraform import -input=false "$addr" "${role}:${policy_name}"
 }
 
+import_lambda_function() {
+  local addr=$1 name=$2
+  in_state "$addr" && return 0
+  if ! aws lambda get-function --function-name "$name" >/dev/null 2>&1; then
+    return 0
+  fi
+  echo "terraform import: $addr (Lambda $name)"
+  terraform import -input=false "$addr" "$name"
+}
+
 LAMBDA_ROLE="${PREFIX}-lambda-role"
 GITHUB_ROLE="github-actions-twin-deploy"
 
@@ -78,6 +88,9 @@ import_attachment aws_iam_role_policy_attachment.lambda_bedrock "$LAMBDA_ROLE" \
   "arn:aws:iam::aws:policy/AmazonBedrockFullAccess"
 import_attachment aws_iam_role_policy_attachment.lambda_s3 "$LAMBDA_ROLE" \
   "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+
+# Lambda function (must exist in AWS and role must be importable first)
+import_lambda_function aws_lambda_function.api "${PREFIX}-api"
 
 # GitHub Actions deploy role — managed attachments
 import_attachment aws_iam_role_policy_attachment.github_lambda "$GITHUB_ROLE" \
