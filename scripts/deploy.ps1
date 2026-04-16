@@ -41,6 +41,14 @@ if (-not (terraform workspace list | Select-String $Environment)) {
     terraform workspace select $Environment
 }
 
+Write-Host "Importing existing AWS resources into state (if any)..." -ForegroundColor Yellow
+$importScript = Join-Path (Split-Path $PSScriptRoot -Parent) "scripts/terraform-import-existing-if-present.sh"
+if (Get-Command bash -ErrorAction SilentlyContinue) {
+    bash $importScript $Environment $ProjectName
+} else {
+    Write-Host "bash not found; skip auto-import. Run the import script from Git Bash if apply fails on existing resources." -ForegroundColor Yellow
+}
+
 $tfCommon = @(
     "-var=project_name=$ProjectName",
     "-var=environment=$Environment"

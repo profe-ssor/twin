@@ -36,6 +36,11 @@ else
   terraform workspace select "$ENVIRONMENT"
 fi
 
+# If AWS already has resources from a prior apply but this state file is empty/new, import them
+# so apply does not fail with EntityAlreadyExists / BucketAlreadyExists.
+echo "🔗 Importing existing AWS resources into state (no-op if none or already in state)..."
+bash "../scripts/terraform-import-existing-if-present.sh" "$ENVIRONMENT" "$PROJECT_NAME"
+
 # Shared Terraform arguments (workspace already selected above)
 TF_COMMON_VARS=(-var="project_name=$PROJECT_NAME" -var="environment=$ENVIRONMENT")
 if [ "$ENVIRONMENT" = "prod" ]; then
