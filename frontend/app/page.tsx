@@ -17,7 +17,14 @@ export default function Home() {
           </div>
 
           <footer className="mt-8 text-center text-sm text-gray-500">
-            <p>Week 2: Building Your Digital Twin</p>
+            <a
+              href="https://collins-site.onrender.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-700 underline underline-offset-2 hover:text-slate-900"
+            >
+              Visit my Website
+            </a>
           </footer>
         </div>
       </div>

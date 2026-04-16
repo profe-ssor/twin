@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Boansi Kyeremateng Collins — AI profile assistant",
   description:
-    "Boansi Kyeremateng Collins's AI profile assistant — portfolio deployment on AWS. Link to his website is in the app header.",
+    "Boansi Kyeremateng Collins's AI profile assistant — portfolio AI on AWS. Website link is in the page footer.",
 };
 
 export default function RootLayout({

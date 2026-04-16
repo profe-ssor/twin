@@ -110,22 +110,7 @@ export default function Twin() {
                     <Bot className="w-6 h-6" />
                     AI profile assistant
                 </h2>
-                <p className="text-sm text-slate-300 mt-1">
-                    <a
-                        href="https://collins-site.onrender.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium text-white underline decoration-slate-400 underline-offset-2 hover:decoration-white"
-                    >
-                        Visit my Website
-                    </a>
-                    <span className="mx-2 text-slate-500" aria-hidden>
-                        ·
-                    </span>
-                    <span>
-                        Portfolio AI on AWS — API, static hosting, and automated releases.
-                    </span>
-                </p>
+                <p className="text-sm text-slate-300 mt-1">Portfolio AI</p>
             </div>
 
             {/* Messages */}
